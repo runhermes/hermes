@@ -5,9 +5,9 @@ configure do
 end
 
 get '/' do
-  'Hello World'
+  'Welcome'
 end
 
 get '/oauth' do
-  'Hello Auth'
+  'Welcome oauth'
 end
