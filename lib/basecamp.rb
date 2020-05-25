@@ -47,7 +47,7 @@ module Basecamp
   end
 
   def self.read_token(token_key)
-    return tokens[token_key] if tokens.key? token_key
+    return @@tokens[token_key] if @@tokens.key? token_key
 
     token = File.open(token_key, &:readline)
     @@tokens[token_key] = token
