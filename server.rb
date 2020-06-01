@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require 'httpclient'
 require './lib/basecamp'
+require './lib/gitlab'
+require 'json'
 
 configure do
   set :server, :puma
@@ -32,4 +33,11 @@ get '/basecamp/oauth/callback' do
 
   logger.info 'Saving OAuth tokens for further usage'
   Basecamp.update_tokens(token.access_token, token.refresh_token)
+end
+
+post '/gitlab' do
+  gitlab = Gitlab.new(JSON.parse request.body.read)
+
+  halt 400, 'Unsupported wehboook type' unless gitlab.valid?
+
 end

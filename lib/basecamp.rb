@@ -7,6 +7,8 @@ module Basecamp
   CLIENT_SECRET = ENV['BC_CLIENT_SECRET']
   REDIRECT_URI = ENV['BC_REDIRECT_URI']
 
+  URL_REGEX = 'https://3.basecamp.com'
+
   @@tokens = {}
 
   def self.configure_oauth_client
@@ -17,6 +19,18 @@ module Basecamp
       authorization_endpoint: 'https://launchpad.37signals.com/authorization/new',
       token_endpoint: 'https://launchpad.37signals.com/authorization/token'
     )
+  end
+
+  def find_links(text)
+    links = Uri.extract(text)
+
+    links.select { |link| link.start_with?('https://3.basecamp.com') }
+  end
+
+  def get_basecamp_resources(description)
+    links = extract_links(description)
+    
+    return [] unless links
   end
 
   def self.update_tokens(access_token, refresh_token)
