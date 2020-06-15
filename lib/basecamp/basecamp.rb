@@ -10,6 +10,7 @@ require_relative 'lib/error.rb'
 require_relative 'lib/page_links.rb'
 require_relative 'lib/paginated_response.rb'
 require_relative 'lib/request.rb'
+require_relative 'lib/authorization.rb'
 require_relative 'lib/client.rb'
 
 module Basecamp

@@ -40,12 +40,16 @@ module Basecamp
       self.user_agent     = DEFAULT_USER_AGENT
     end
 
-    def self.auth_endpoint
+    def auth_endpoint
       'https://launchpad.37signals.com/authorization/new'
     end
 
-    def self.token_endpoint
+    def token_endpoint
       'https://launchpad.37signals.com/authorization/token'
+    end
+
+    def api_endpoint
+      'https://3.basecampapi.com'
     end
   end
 end

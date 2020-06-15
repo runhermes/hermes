@@ -10,7 +10,6 @@ configure do
   set :server, :puma
   set :root, File.dirname(__FILE__)
 
-  register Config
 end
 
 get '/' do
@@ -18,9 +17,7 @@ get '/' do
 end
 
 get '/basecamp/oauth' do
-  client = Basecamp::API::Authorization.configure_oauth_client
-
-  authz_uri = client.authorization_uri type: :web_server
+  authz_uri = Basecamp.authz_endpoint
   logger.info "Redirecting to #{authz_uri}"
 
   `open "#{authz_uri}"`
@@ -33,7 +30,7 @@ get '/basecamp/oauth/callback' do
   auth_code = params[:code]
 
   logger.info 'Fetching OAuth tokens from Basecamp'
-  token = Basecamp::API::Authorization.access_token! auth_code
+  Basecamp.obtain_token_with_code! auth_code
 
   logger.info 'Saving OAuth tokens for further usage'
   Basecamp::API::Authorization.update_tokens(token.access_token, token.refresh_token)

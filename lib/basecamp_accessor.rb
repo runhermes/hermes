@@ -1,14 +1,7 @@
 # frozen_string_literal: true
 
-module Basecamp
-  module API
+class BasecampAccessor
 
-    def self.headers
-      {
-        :Authorization => ::Basecamp::Configuration.access_token
-      }
-    end
-    
     def self.find_links(text)
       links = Uri.extract(text)
   
@@ -29,5 +22,4 @@ module Basecamp
     def self.get_comments(resource)
       response = HTTParty.get(resource.comments_url)
     end
-  end
 end

@@ -5,8 +5,8 @@ module Gitlab
   class Client < API
     Dir[File.expand_path('client/*.rb', __dir__)].each { |f| require f }
 
-    # Please keep in alphabetical order
-    
+    # Keep in alphabetical order
+    include Authorization
 
     # Text representation of the client, masking private token.
     #

@@ -10,11 +10,9 @@ module Basecamp
     # @raise [Error:MissingCredentials]
     def initialize(options = {})
       options = Basecamp.options.merge(options)
-      (Configuration::VALID_OPTIONS_KEYS + [:auth_token]).each do |key|
+      (Configuration::VALID_OPTIONS_KEYS).each do |key|
         send("#{key}=", options[key]) if options[key]
       end
-      request_defaults(sudo)
-      self.class.headers 'User-Agent' => user_agent
     end
   end
 end
