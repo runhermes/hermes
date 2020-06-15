@@ -18,9 +18,13 @@ class Gitlab
 
   def process_mr
     # TODO: Handle different MR states, open, close or update
-    basecamp_resources = Basecamp.get_basecamp_resources(@request["object_attributes"]["description"])
+    resources = Basecamp::API.get_resources(@request["object_attributes"]["description"])
 
-    return unless basecamp_resources
+    return unless resources
+
+    if resources.comments_count == 0
+      puts "No comments found"
+    end
   end
 
 end

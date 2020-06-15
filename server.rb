@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require './lib/basecamp'
-require './lib/gitlab'
 require 'json'
+require_relative './lib/basecamp/basecamp.rb'
+require_relative './lib/gitlab.rb'
+
 
 configure do
   set :server, :puma
+  set :root, File.dirname(__FILE__)
+
+  register Config
 end
 
 get '/' do
@@ -14,7 +18,7 @@ get '/' do
 end
 
 get '/basecamp/oauth' do
-  client = Basecamp.configure_oauth_client
+  client = Basecamp::API::Authorization.configure_oauth_client
 
   authz_uri = client.authorization_uri type: :web_server
   logger.info "Redirecting to #{authz_uri}"
@@ -29,10 +33,10 @@ get '/basecamp/oauth/callback' do
   auth_code = params[:code]
 
   logger.info 'Fetching OAuth tokens from Basecamp'
-  token = Basecamp.access_token! auth_code
+  token = Basecamp::API::Authorization.access_token! auth_code
 
   logger.info 'Saving OAuth tokens for further usage'
-  Basecamp.update_tokens(token.access_token, token.refresh_token)
+  Basecamp::API::Authorization.update_tokens(token.access_token, token.refresh_token)
 end
 
 post '/gitlab' do
