@@ -5,18 +5,13 @@ class BasecampAccessor
     def self.find_links(text)
       links = Uri.extract(text)
   
-      links.select { |link| link.start_with?('https://3.basecamp.com') }.
-        map { |link| link.sub('3.basecamp.com', '3.basecampapi.com') }
+      links.select { |link| link.start_with?('https://3.basecamp.com') }
     end
   
-    def self.get_resources(description)
+    def self.resources(description)
       links = self.find_links(description)
-      
-      links.map do |link|
-        response = HTTParty.get(link)
-        
-        Resource.new(response)
-      end
+
+      resources = links.map { |link| Camper.resource(link) }
     end
   
     def self.get_comments(resource)

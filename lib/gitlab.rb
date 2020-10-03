@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'uri'
-require './basecamp'
+
+require_relative './basecamp_accessor.rb'
 
 
 class Gitlab
@@ -18,12 +18,12 @@ class Gitlab
 
   def process_mr
     # TODO: Handle different MR states, open, close or update
-    resources = Basecamp::API.get_resources(@request["object_attributes"]["description"])
+    resources = BasecampAccessor.resources(@request["object_attributes"]["description"])
 
     return unless resources
 
-    if resources.comments_count == 0
-      puts "No comments found"
+    resources.each do |res|
+      puts res.inspect
     end
   end
 

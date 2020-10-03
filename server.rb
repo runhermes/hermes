@@ -2,22 +2,23 @@
 
 require 'sinatra'
 require 'json'
-require_relative './lib/basecamp/basecamp.rb'
+require 'camper'
+# require_relative './lib/basecamp_accessor.rb'
 require_relative './lib/gitlab.rb'
-
 
 configure do
   set :server, :puma
   set :root, File.dirname(__FILE__)
-
 end
+
+client = Camper.client
 
 get '/' do
   'Welcome'
 end
 
 get '/basecamp/oauth' do
-  authz_uri = Basecamp.authz_endpoint
+  authz_uri = client.authorization_uri
   logger.info "Redirecting to #{authz_uri}"
 
   `open "#{authz_uri}"`
@@ -30,15 +31,17 @@ get '/basecamp/oauth/callback' do
   auth_code = params[:code]
 
   logger.info 'Fetching OAuth tokens from Basecamp'
-  Basecamp.obtain_token_with_code! auth_code
+  token = client.authorize! auth_code
 
-  logger.info 'Saving OAuth tokens for further usage'
-  Basecamp::API::Authorization.update_tokens(token.access_token, token.refresh_token)
+  puts "Refresh token: #{token.refresh_token}"
+  puts "Access token: #{token.access_token}"
 end
 
 post '/gitlab' do
+  puts "Endpoint reached"
   gitlab = Gitlab.new(JSON.parse request.body.read)
 
-  halt 400, 'Unsupported wehboook type' unless gitlab.valid?
+  halt 200, 'Unsupported wehboook type' unless gitlab.valid?
 
+  gitlab.process_mr
 end
