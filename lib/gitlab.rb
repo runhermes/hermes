@@ -5,23 +5,11 @@ class Gitlab
   TOKEN = ENV['HM_GITLAB_TOKEN']
   SECRET = ENV['HM_GITLAB_SECRET']
 
-  def initialize(request)
-    @request = request
+  def initialize
   end
 
-  def valid?
+  def valid?(request)
     return @request["object_kind"] == "merge_request"
-  end
-
-  def process_mr
-    # TODO: Handle different MR states, open, close or update
-    resources = Basecamp.resources(@request["object_attributes"]["description"])
-
-    return unless resources
-
-    resources.each do |res|
-      puts res.inspect
-    end
   end
 
 end
