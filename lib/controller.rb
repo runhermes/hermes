@@ -2,10 +2,10 @@
 
 class Controller
 
-  def initialize(request, repo)
+  def initialize(request, repo_api)
     @request = request
     @basecamp = Basecamp.new
-    @repo = repo
+    @repo_api = repo_api
   end
 
   def authorization_uri
@@ -19,6 +19,10 @@ class Controller
     puts "Refresh token: #{token.refresh_token}"
     puts "Access token: #{token.access_token}"
     token
+  end
+
+  def valid_request?
+    @repo_api.valid_request?
   end
 
   def process_request
