@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'uri'
+
 class BasecampAccessor
 
     def self.find_links(text)
