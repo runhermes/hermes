@@ -2,23 +2,10 @@
 
 class Controller
 
-  def initialize(request, repo_api)
+  def initialize(request, basecamp, repo_api)
     @request = request
-    @basecamp = Basecamp.new
+    @basecamp = basecamp
     @repo_api = repo_api
-  end
-
-  def authorization_uri
-    @basecamp.authorization_uri
-  end
-
-  def authorize!(code)
-    logger.info 'Fetching OAuth tokens from Basecamp'
-    token = @basecamp.authorize! auth_code
-
-    puts "Refresh token: #{token.refresh_token}"
-    puts "Access token: #{token.access_token}"
-    token
   end
 
   def valid_request?

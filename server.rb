@@ -35,9 +35,9 @@ end
 
 post '/gitlab' do
   puts "Endpoint reached"
-  ctrl = Controller.new(JSON.parse(request.body.read), Gitlab.new)
+  ctrl = Controller.new(JSON.parse(request.body.read), @basecamp, Gitlab.new)
 
-  halt 200, 'Unsupported wehboook type' unless controller.valid_request?
+  halt 200, 'Unsupported wehboook type' unless ctrl.valid_request?
 
-  controller.process_request
+  ctrl.process_request
 end
