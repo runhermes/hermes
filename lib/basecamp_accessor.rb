@@ -5,7 +5,7 @@ require 'uri'
 class BasecampAccessor
 
     def self.find_links(text)
-      links = Uri.extract(text)
+      links = URI.extract(text)
   
       links.select { |link| link.start_with?('https://3.basecamp.com') }
     end
