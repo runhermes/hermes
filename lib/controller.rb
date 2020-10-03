@@ -9,7 +9,7 @@ class Controller
   end
 
   def valid_request?
-    @repo_api.valid_request?
+    @repo_api.valid_request?(@request)
   end
 
   def process_request

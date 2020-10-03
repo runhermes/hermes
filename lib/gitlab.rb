@@ -8,7 +8,7 @@ class Gitlab
   def initialize
   end
 
-  def valid?(request)
+  def valid_request?(request)
     return @request["object_kind"] == "merge_request"
   end
 
