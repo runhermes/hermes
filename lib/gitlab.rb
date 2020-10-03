@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './basecamp_accessor.rb'
-
-
 class Gitlab
   API = ENV['HM_GITLAB_API']
   TOKEN = ENV['HM_GITLAB_TOKEN']
@@ -18,7 +15,7 @@ class Gitlab
 
   def process_mr
     # TODO: Handle different MR states, open, close or update
-    resources = BasecampAccessor.resources(@request["object_attributes"]["description"])
+    resources = Basecamp.resources(@request["object_attributes"]["description"])
 
     return unless resources
 

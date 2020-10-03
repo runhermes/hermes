@@ -3,7 +3,7 @@
 require 'sinatra'
 require 'json'
 require 'camper'
-# require_relative './lib/basecamp_accessor.rb'
+require_relative './lib/basecamp.rb'
 require_relative './lib/gitlab.rb'
 
 configure do
@@ -11,14 +11,14 @@ configure do
   set :root, File.dirname(__FILE__)
 end
 
-client = Camper.client
+camper = Basecamp.new
 
 get '/' do
   'Welcome'
 end
 
 get '/basecamp/oauth' do
-  authz_uri = client.authorization_uri
+  authz_uri = camper.authorization_uri
   logger.info "Redirecting to #{authz_uri}"
 
   `open "#{authz_uri}"`
@@ -29,12 +29,7 @@ get '/basecamp/oauth/callback' do
   halt 400 unless params.key? :code
 
   auth_code = params[:code]
-
-  logger.info 'Fetching OAuth tokens from Basecamp'
-  token = client.authorize! auth_code
-
-  puts "Refresh token: #{token.refresh_token}"
-  puts "Access token: #{token.access_token}"
+  camper.authorize! auth_code
 end
 
 post '/gitlab' do
