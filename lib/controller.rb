@@ -14,6 +14,7 @@ class Controller
 
   def process_request
     # TODO: Handle different MR states, open, close or update
+    puts "Request:\n #{@request}"
     resources = @basecamp.resources(@request["object_attributes"]["description"])
 
     return unless resources

@@ -10,7 +10,7 @@ GEM
     aes_key_wrap (1.1.0)
     attr_required (1.0.1)
     bindata (2.4.8)
-    camper (0.0.6)
+    camper (0.0.7)
       httparty (~> 0.18)
       rack-oauth2 (~> 1.14)
     concurrent-ruby (1.1.7)
@@ -65,7 +65,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  camper (~> 0.0.6)
+  camper (~> 0.0.7)
   gitlab (= 4.11.0)
   puma (~> 4.3)
   sinatra (~> 2.0)
