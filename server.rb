@@ -12,7 +12,10 @@ configure do
   set :root, File.dirname(__FILE__)
 end
 
-@basecamp = Basecamp.new
+before do
+  @basecamp = Basecamp.new
+  @gitlab = Gitlab.new
+end
 
 get '/' do
   'Welcome'
@@ -35,9 +38,9 @@ end
 
 post '/gitlab' do
   puts "Endpoint reached"
-  ctrl = Controller.new(JSON.parse(request.body.read), @basecamp, Gitlab.new)
+  ctrl = Controller.new(JSON.parse(request.body.read), @basecamp, @gitlab)
 
-  halt 200, 'Unsupported wehboook type' unless ctrl.valid_request?
+  halt 400, 'Unsupported wehboook type' unless ctrl.valid_request?
 
   ctrl.process_request
 end
