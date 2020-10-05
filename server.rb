@@ -17,7 +17,7 @@ configure do
 end
 
 before do
-  @basecamp = Basecamp.new
+  @basecamp = Basecamp.new(logger)
 end
 
 get '/' do

@@ -23,6 +23,7 @@ class Controller
       begin
         @basecamp.update_comments(res, @repo_api)
       rescue Error::BasecampError => e
+        @logger.info("Failed to update resource of type #{res.type} with id: #{res.id}")
         @logger.info(e.message)
       end
     end

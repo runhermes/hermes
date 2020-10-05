@@ -11,16 +11,17 @@ class Basecamp
 
   attr_accessor :request
 
-  def initialize
+  def initialize(logger)
+    @logger = logger
     @client = Camper.client
   end
 
   def authorize!(code)
-    logger.info 'Fetching OAuth tokens from Basecamp'
+    @logger.info 'Fetching OAuth tokens from Basecamp'
     token = @client.authorize! auth_code
 
-    puts "Refresh token: #{token.refresh_token}"
-    puts "Access token: #{token.access_token}"
+    @logger.info "Refresh token: #{token.refresh_token}"
+    @logger.info "Access token: #{token.access_token}"
     token
   end
 
@@ -33,7 +34,9 @@ class Basecamp
   def update_comments(resource, repo_api)
     case repo_api.state
     when PullRequestState::OPENED
-      @client.create_comment(resource, open_request_comment(repo_api))
+      @logger.info "Creating comment for opened #{repo_api.acronym}"
+      result = @client.create_comment(resource, open_request_comment(repo_api))
+      @logger.info "Result: #{result}"
     when PullRequestState::CLOSED
     end
   end
