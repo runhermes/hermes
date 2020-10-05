@@ -18,7 +18,7 @@ class GitlabWrapper
   end
 
   def state
-    case @request["state"]
+    case @request["object_attributes"]["state"]
     when "opened"
       PullRequestState::OPENED
     when "closed"
