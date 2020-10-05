@@ -25,6 +25,10 @@ class Controller
       rescue Error::BasecampError => e
         @logger.info("Failed to update resource of type #{res.type} with id: #{res.id}")
         @logger.info(e.message)
+      rescue StandarError => e
+        @logger.info("Unknown error happened")
+        @logger.info(e.message)
+        @logger.info(e.backtrace)
       end
     end
   end
