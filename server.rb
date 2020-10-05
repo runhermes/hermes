@@ -13,6 +13,7 @@ require_relative './lib/controller.rb'
 configure do
   set :server, :puma
   set :root, File.dirname(__FILE__)
+  set :dump_errors, true
 end
 
 before do
@@ -39,7 +40,11 @@ get '/basecamp/oauth/callback' do
 end
 
 post '/gitlab' do
+  logger.info 'Received gitlab webhook'
+  
   json_request = JSON.parse(request.body.read)
+  logger.debug "Request body: #{json_request}"
+
   @basecamp.request = json_request
   @gitlab = GitlabWrapper.new(json_request)
   ctrl = Controller.new(logger, @basecamp, @gitlab)
