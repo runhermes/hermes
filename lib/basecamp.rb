@@ -1,62 +1,55 @@
 # frozen_string_literal: true
 
-require 'rack/oauth2'
+require 'uri'
+require 'forwardable'
 
-module Basecamp
-  CLIENT_ID = ENV['BC_CLIENT_ID']
-  CLIENT_SECRET = ENV['BC_CLIENT_SECRET']
-  REDIRECT_URI = ENV['BC_REDIRECT_URI']
+class Basecamp
 
-  @@tokens = {}
+  extend Forwardable
 
-  def self.configure_oauth_client
-    Rack::OAuth2::Client.new(
-      identifier: CLIENT_ID,
-      secret: CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      authorization_endpoint: 'https://launchpad.37signals.com/authorization/new',
-      token_endpoint: 'https://launchpad.37signals.com/authorization/token'
-    )
+  def_delegators :@client, :authorization_uri
+
+  attr_accessor :request
+
+  def initialize(logger)
+    @logger = logger
+    @client = Camper.client
   end
 
-  def self.update_tokens(access_token, refresh_token)
-    update_token('bc_access_token', access_token)
-    update_token('bc_refresh_token', refresh_token)
+  def authorize!(code)
+    @logger.info 'Fetching OAuth tokens from Basecamp'
+    token = @client.authorize! auth_code
+
+    @logger.info "Refresh token: #{token.refresh_token}"
+    @logger.info "Access token: #{token.access_token}"
+    token
   end
 
-  def self.access_token
-    read_token 'bc_access_token'
+  def resources
+    links = find_links(@request["object_attributes"]["description"])
+
+    resources = links.map { |link| @client.resource(link) }
   end
 
-  def self.refresh_token
-    read_token 'bc_refresh_token'
+  def update_comments(resource, repo_api)
+    case repo_api.state
+    when PullRequestState::OPENED
+      @logger.info "Creating comment for opened #{repo_api.acronym}"
+      result = @client.create_comment(resource, open_request_comment(repo_api))
+      @logger.info "Result: #{result}"
+    when PullRequestState::CLOSED
+    end
   end
 
-  def self.access_token!(auth_code)
-    client = configure_oauth_client
-    client.authorization_code = auth_code
+  private
 
-    # Passing secrets as query string
-    client.access_token!(
-      client_auth_method: nil,
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
-      type: :web_server,
-      code: auth_code
-    )
+  def open_request_comment(repo_api)
+    "This TODO will be completed once #{repo_api.acronym} #{repo_api.url} is merged"
   end
 
-  def self.read_token(token_key)
-    return @@tokens[token_key] if @@tokens.key? token_key
+  def find_links(text)
+    links = URI.extract(text)
 
-    token = File.open(token_key, &:readline)
-    @@tokens[token_key] = token
-  end
-
-  def self.update_token(token_key, token)
-    # Writes to file
-    File.open(token_key, 'w') { |f| f.write token }
-    # Saves in memory
-    @@tokens[token_key] = token
+    links.select { |link| link.start_with?('https://3.basecamp.com') }
   end
 end

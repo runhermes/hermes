@@ -14,6 +14,6 @@ COPY . ./
 
 EXPOSE 4567
 
-ENV CLIENT_ID=client_id CLIENT_SECRET=client_secret REDIRECT_URI=redirect_uri
+ENV CLIENT_ID='client_id' CLIENT_SECRET='client_secret' REDIRECT_URI='redirect_uri' REFRESH_TOKEN='refresh_token' ACCESS_TOKEN='access_token'
 
 CMD ["bundle", "exec", "rackup", "-p", "4567", "--host", "0.0.0.0"]
