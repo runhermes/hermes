@@ -41,9 +41,9 @@ end
 
 post '/gitlab' do
   logger.info 'Received gitlab webhook'
-  
+
   json_request = JSON.parse(request.body.read)
-  logger.debug "Request body: #{json_request}"
+  logger.info "Request body: #{json_request}"
 
   @basecamp.request = json_request
   @gitlab = GitlabWrapper.new(json_request)
