@@ -2,9 +2,10 @@
 
 module Error
 
-  class BasecampError < Error; end
+  # Custom error class for rescuing from all Camper errors.
+  class BasecampError < StandardError; end
 
-  class InvalidResource < Error; end
+  class InvalidResource < BasecampError; end
 
   class ResourceNotFound < BasecampError; end
 
