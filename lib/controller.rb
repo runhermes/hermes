@@ -31,5 +31,7 @@ class Controller
         @logger.info(e.backtrace)
       end
     end
+
+    nil
   end
 end
