@@ -12,7 +12,7 @@ class Controller
   end
 
   def process_request
-    logger.debug "Request: #{@request}"
+    @logger.debug "Request: #{@request}"
     resources = @basecamp.resources
 
     return unless resources
