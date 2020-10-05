@@ -39,6 +39,6 @@ class GitlabWrapper
   end
 
   def url
-    @request["url"]
+    @request["object_attributes"]["url"]
   end
 end
