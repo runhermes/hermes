@@ -3,8 +3,10 @@
 require 'sinatra'
 require 'json'
 require 'camper'
+require_relative './lib/error.rb'
+require_relative '.lib/pull_request_state.rb'
 require_relative './lib/basecamp.rb'
-require_relative './lib/gitlab.rb'
+require_relative './lib/gitlab_wrapper.rb'
 require_relative './lib/controller.rb'
 
 configure do
@@ -14,7 +16,6 @@ end
 
 before do
   @basecamp = Basecamp.new
-  @gitlab = Gitlab.new
 end
 
 get '/' do
@@ -37,8 +38,10 @@ get '/basecamp/oauth/callback' do
 end
 
 post '/gitlab' do
-  puts "Endpoint reached"
-  ctrl = Controller.new(JSON.parse(request.body.read), @basecamp, @gitlab)
+  json_request = JSON.parse(request.body.read)
+  @basecamp.request = json_request
+  @gitlab = GitlabWrapper.new(json_request)
+  ctrl = Controller.new(@basecamp, @gitlab)
 
   halt 400, 'Unsupported wehboook type' unless ctrl.valid_request?
 
