@@ -41,6 +41,7 @@ end
 
 post '/gitlab' do
   logger.info 'Received gitlab webhook'
+  logger.info "Request: #{request}"
 
   json_request = JSON.parse(request.body.read)
   logger.info "Request body: #{json_request}"
