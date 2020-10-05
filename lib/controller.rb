@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Controller
-  def initialize(request, basecamp, repo_api)
-    @request = request
+  def initialize(logger, basecamp, repo_api)
+    @logger = logger
     @basecamp = basecamp
     @repo_api = repo_api
   end
@@ -12,8 +12,7 @@ class Controller
   end
 
   def process_request
-    # TODO: Handle different MR states, open, close or update
-    puts "Request:\n #{@request}"
+    logger.debug "Request: #{@request}"
     resources = @basecamp.resources
 
     return unless resources
@@ -21,7 +20,12 @@ class Controller
     state = @repo_api.state
 
     resources.each do |res|
-      comments = @basecamp.update_comments(res, @repo_api)
+      begin
+        @basecamp.update_comments(res, @repo_api)
+      rescue Error::BasecampError => e
+        @logger.debug(e.message)
+      end
+
     end
   end
 end

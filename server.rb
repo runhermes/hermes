@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'json'
 require 'camper'
+require 'gitlab'
 require_relative './lib/error.rb'
 require_relative './lib/pull_request_state.rb'
 require_relative './lib/basecamp.rb'
@@ -41,7 +42,7 @@ post '/gitlab' do
   json_request = JSON.parse(request.body.read)
   @basecamp.request = json_request
   @gitlab = GitlabWrapper.new(json_request)
-  ctrl = Controller.new(@basecamp, @gitlab)
+  ctrl = Controller.new(logger, @basecamp, @gitlab)
 
   halt 400, 'Unsupported wehboook type' unless ctrl.valid_request?
 

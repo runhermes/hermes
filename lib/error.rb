@@ -2,10 +2,17 @@
 
 module Error
 
-  # Custom error class for rescuing from all Camper errors.
-  class BasecampError < StandardError; end
+  # Custom error class for rescuing from all basecamp errors.
+  class BasecampError < StandardError
+    attr_reader :resource
 
-  class InvalidResource < BasecampError; end
+    def initialize(resource)
+      @resource = resource
+    end
+  end
+
+  class InvalidResource < BasecampError
+  end
 
   class ResourceNotFound < BasecampError; end
 
