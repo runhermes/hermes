@@ -59,7 +59,7 @@ GEM
     aes_key_wrap (1.1.0)
     attr_required (1.0.1)
     bindata (2.4.8)
-    bootsnap (1.4.8)
+    bootsnap (1.4.9)
       msgpack (~> 1.0)
     builder (3.2.4)
     byebug (11.1.3)
