@@ -1,19 +1,8 @@
-FROM ruby:2.7.2
-
-# Configure bundler
-ENV LANG=C.UTF-8 \
-  BUNDLE_JOBS=4 \
-  BUNDLE_RETRY=3
+FROM runhermes/hermes-base
 
 ENV RAILS_ENV=production
 
-RUN bundle config set deployment 'true'
-
 WORKDIR /hermes
-
-COPY Gemfile Gemfile.lock ./
-
-RUN bundle check || bundle install
 
 COPY . .
 
