@@ -8,7 +8,7 @@ class BasecampController < ApplicationController
     authz_uri = @basecamp.authorization_uri
     logger.info "Redirecting to #{authz_uri}"
 
-    OpenURI.open(authz_uri)
+    URI.open(authz_uri)
   end
 
   def callback
