@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class GitlabConnector
-  # API = ENV['HM_GITLAB_API']
-  # TOKEN = ENV['HM_GITLAB_TOKEN']
-  # SECRET = ENV['HM_GITLAB_SECRET']
+  API = ENV['HM_GITLAB_API']
+  TOKEN = ENV['HM_GITLAB_TOKEN']
+  SECRET = ENV['HM_GITLAB_SECRET']
 
   def initialize(request)
     @client = Gitlab.client(
