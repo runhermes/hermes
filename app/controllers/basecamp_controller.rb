@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class BasecampController < ApplicationController
 
   before_action :new_instance
@@ -5,8 +7,8 @@ class BasecampController < ApplicationController
   def oauth
     authz_uri = @basecamp.authorization_uri
     logger.info "Redirecting to #{authz_uri}"
-    
-    redirect_to authz_uri
+
+    `open "#{authz_uri}"`
   end
 
   def callback
