@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GitlabConnector
+class GitlabClient
   API = ENV['HM_GITLAB_API']
   TOKEN = ENV['HM_GITLAB_TOKEN']
   SECRET = ENV['HM_GITLAB_SECRET']
@@ -9,10 +9,6 @@ class GitlabConnector
     @logger = logger
     puts "API: #{API}; Token: #{TOKEN}"
 
-    @client = Gitlab.client(
-      endpoint: API,
-      private_token: TOKEN
-    )
     @request = request
   end
 

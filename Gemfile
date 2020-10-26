@@ -8,8 +8,6 @@ gem 'rails', '~> 6.0.3', '>= 6.0.3.4'
 # Use Puma as the app server
 gem 'puma', '~> 5.0.2'
 
-gem 'gitlab', '4.16.0'
-
 gem 'camper', '~> 0.0.7'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder

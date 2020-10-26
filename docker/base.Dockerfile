@@ -9,4 +9,4 @@ WORKDIR /hermes
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle check || bundle install
+RUN bundle check || bundle install --deployment
