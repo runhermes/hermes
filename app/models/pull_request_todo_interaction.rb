@@ -1,0 +1,2 @@
+class PullRequestTodoInteraction < ApplicationRecord
+end

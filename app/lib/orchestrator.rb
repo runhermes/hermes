@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Controller
+class Orchestrator
   def initialize(logger, basecamp, repo_api)
     @logger = logger
     @basecamp = basecamp
@@ -12,7 +12,6 @@ class Controller
   end
 
   def process_request
-    @logger.info "Processing request"
     @logger.info "Getting basecamp resources from request"
     resources = @basecamp.resources
 

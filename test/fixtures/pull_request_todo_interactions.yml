@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pr_url: MyString
+  todo_url: MyString
+  pr_state: MyString
+
+two:
+  pr_url: MyString
+  todo_url: MyString
+  pr_state: MyString

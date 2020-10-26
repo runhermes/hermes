@@ -34,10 +34,10 @@ class Basecamp
   def update_comments(resource, repo_api)
     case repo_api.state
     when PullRequestState::OPENED
-      @logger.info "Creating comment for opened #{repo_api.acronym}"
+      @logger.info "Creating comment for opened #{repo_api.acronym} ##{repo_api.id}"
       result = @client.create_comment(resource, open_request_comment(repo_api))
       @logger.info "Result: #{result}"
-    when PullRequestState::CLOSED
+    when PullRequestState::MERGED
     end
   end
 

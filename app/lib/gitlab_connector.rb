@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class GitlabWrapper
-  API = ENV['HM_GITLAB_API']
-  TOKEN = ENV['HM_GITLAB_TOKEN']
-  SECRET = ENV['HM_GITLAB_SECRET']
+class GitlabConnector
+  # API = ENV['HM_GITLAB_API']
+  # TOKEN = ENV['HM_GITLAB_TOKEN']
+  # SECRET = ENV['HM_GITLAB_SECRET']
 
   def initialize(request)
     @client = Gitlab.client(
@@ -23,8 +23,8 @@ class GitlabWrapper
       PullRequestState::OPENED
     when "closed"
       PullRequestState::CLOSED
-    when "reopened"
-      PullRequestState::REOPENED
+    when "merged"
+      PullRequestState::MERGED
     else
       PullRequestState::UPDATED
     end
@@ -36,6 +36,10 @@ class GitlabWrapper
 
   def acronym
     'MR'
+  end
+
+  def id
+    @request['object_attributes']['id']
   end
 
   def url

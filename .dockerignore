@@ -1,8 +1,0 @@
-.editorconfig
-.git
-.gitignore
-.ruby-version
-Dockerfile
-LICENSE
-README.md
-docker-compose.yml
