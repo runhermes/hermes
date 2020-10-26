@@ -17,8 +17,8 @@ class Basecamp
   end
 
   def authorize!(code)
-    @logger.info 'Fetching OAuth tokens from Basecamp'
-    token = @client.authorize! auth_code
+    @logger.info "Fetching OAuth tokens from Basecamp using code: #{code}"
+    token = @client.authorize! code
 
     @logger.info "Refresh token: #{token.refresh_token}"
     @logger.info "Access token: #{token.access_token}"
