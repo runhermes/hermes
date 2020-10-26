@@ -40,7 +40,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: runhermes/hermes-base
-          tag_with_ref: true
           tag_with_sha: true
           dockerfile: docker/base.Dockerfile
 
@@ -56,6 +55,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: runhermes/hermes
-          tag_with_ref: true
           tag_with_sha: true
           dockerfile: docker/Dockerfile
