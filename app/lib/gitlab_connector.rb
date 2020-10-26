@@ -7,7 +7,7 @@ class GitlabConnector
 
   def initialize(logger, request)
     @logger = logger
-    @logger.info "API: #{API}; Token: #{TOKEN}"
+    puts "API: #{API}; Token: #{TOKEN}"
 
     @client = Gitlab.client(
       endpoint: API,
