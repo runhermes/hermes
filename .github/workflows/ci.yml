@@ -25,7 +25,9 @@ jobs:
         gem install bundler --no-document
         bundle install --jobs 4 --retry 3
         bundle exec rake
-  runs-on: ubuntu-latest
+
+  build_base:
+    runs-on: ubuntu-latest
     name: Build and push base image
     needs: test
     steps:
@@ -51,7 +53,7 @@ jobs:
   build_rails:
     runs-on: ubuntu-latest
     name: Build and push rails image
-    needs: test
+    needs: build_base
     steps:
       - uses: actions/checkout@v2
       - name: build-push
