@@ -6,7 +6,7 @@ class BasecampController < ApplicationController
     authz_uri = @basecamp.authorization_uri
     logger.info "Redirecting to #{authz_uri}"
     
-    root to: redirect(authz_uri)
+    redirect_to authz_uri
   end
 
   def callback
