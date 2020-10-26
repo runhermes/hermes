@@ -1,14 +1,17 @@
 class GitlabController < ApplicationController
 
-  before_action :new_instance
-
   def webhook
-      @basecamp.request = params
-      @gitlab = GitlabConnector.new(params)
-      orchestrator = Orchestrator.new(logger, @basecamp, @gitlab)
+    logger.info "Params: #{params}"
+    
+    @basecamp = Basecamp.new(logger)
+    @basecamp.request = params
 
-      return head(:bad_request) unless ctrl.valid_request?
+    @gitlab = GitlabConnector.new(logger, params)
+    orchestrator = Orchestrator.new(logger, @basecamp, @gitlab)
 
-      ctrl.process_request
+    return head(:bad_request) unless ctrl.valid_request?
+
+    ctrl.process_request
   end
+
 end

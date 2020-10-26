@@ -5,7 +5,10 @@ class GitlabConnector
   TOKEN = ENV['HM_GITLAB_TOKEN']
   SECRET = ENV['HM_GITLAB_SECRET']
 
-  def initialize(request)
+  def initialize(logger, request)
+    @logger = logger
+    @logger.info "API: #{API}; Token: #{TOKEN}"
+    
     @client = Gitlab.client(
       endpoint: API,
       private_token: TOKEN
