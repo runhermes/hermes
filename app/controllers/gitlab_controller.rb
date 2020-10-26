@@ -8,7 +8,7 @@ class GitlabController < ApplicationController
     basecamp = Basecamp.new(logger)
     basecamp.request = params
 
-    gitlab = GitlabConnector.new(logger, params)
+    # gitlab = GitlabConnector.new(logger, params)
     # orchestrator = Orchestrator.new(logger, basecamp, gitlab)
 
     # return head(:bad_request) unless orchestrator.valid_request?
