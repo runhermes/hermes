@@ -9,10 +9,10 @@ class GitlabConnector
     @logger = logger
     puts "API: #{API}; Token: #{TOKEN}"
 
-    @client = Gitlab.client(
-      endpoint: API,
-      private_token: TOKEN
-    )
+    # @client = Gitlab.client(
+    #   endpoint: API,
+    #   private_token: TOKEN
+    # )
     @request = request
   end
 
