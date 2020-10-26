@@ -9,21 +9,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby:
-          - 2.7.2
     name: Ruby ${{ matrix.ruby }} test
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Ruby ${{ matrix.ruby }}
-      uses: actions/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ matrix.ruby }}
+        ruby-version: 2.7.2
+        bundler-cache: true
     - name: Test with Rake
       run: |
-        gem install bundler --no-document
-        bundle install --jobs 4 --retry 3
         bundle exec rake
 
   build_base:
