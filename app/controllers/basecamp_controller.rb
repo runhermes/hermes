@@ -14,7 +14,9 @@ class BasecampController < ApplicationController
     return head(:bad_request) unless params.key? :code
 
     auth_code = params[:code]
-    @basecamp.authorize! auth_code
+    tokens = @basecamp.authorize! auth_code
+
+    render plain: "Authentication successful"
   end
 
   private
