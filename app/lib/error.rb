@@ -17,4 +17,14 @@ module Error
   class ResourceNotFound < BasecampError; end
 
   class TodoCompleted < BasecampError; end
+
+  class GitlabError < StandardError
+    attr_reader :resource
+
+    def initialize(resource)
+      @resource = resource
+    end
+  end
+
+  class UnexpectedMergeRequestStatus < GitlabError; end
 end

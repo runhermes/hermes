@@ -31,20 +31,56 @@ class Basecamp
     resources = links.map { |link| @client.resource(link) }
   end
 
-  def update_comments(resource, repo_client)
-    case repo_client.state
-    when PullRequestState::OPENED
-      @logger.info "Creating comment for opened #{repo_client.acronym} ##{repo_client.id}"
-      result = @client.create_comment(resource, open_request_comment(repo_client))
-      @logger.info "Result: #{result}"
-    when PullRequestState::MERGED
+  def apply_todo_workflow(resource, pull_request)
+    current_user_comments = comments_by_current_user(resource)
+    case pull_request.status
+    when PullRequestStatus::OPENED, PullRequestStatus::UPDATED
+      tags = pull_request.tags + ['Status:Open']
+      if current_user_comments.any? { |c| match_tags(c, tags) }
+        @logger.info "Opening comment already created on #{resource.type}##{resource.id}"
+      else
+        @logger.info "Creating opening comment for #{pull_request.full_name}"
+        message = opening_comment(pull_request, tags)
+        @logger.info "Comment:\n#{message}"
+        result = @client.create_comment(resource, message)
+        @logger.info "Result: #{result}"
+      end
+    else
+      @logger.info "Non supported status: #{pull_request.status}"
     end
+  end
+
+  def comments_by_current_user(resource)
+    current_user = @client.profile
+
+    @client.comments(resource).auto_paginate.
+      select { |c| c.creator.id == current_user.id }
   end
 
   private
 
-  def open_request_comment(repo_client)
-    "This TODO will be completed once #{repo_client.acronym} #{repo_client.url} is merged"
+  def match_tags(comment, tags)
+    tags.each do |tag|
+      return false unless comment.content.match(/<strong.*>.*#{tag}.*<\/strong>/)
+    end
+
+    true
+  end
+
+  def opening_comment(pull_request, tags)
+    project_tag, pr_tag, status_tag = tags
+    @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
+    %{
+      <div>
+      TODO will be completed once <a href='#{pull_request.url}'>#{pull_request.full_name}</a> is merged
+      <br><br>
+      </div>
+      <div>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{project_tag}&gt;</strong>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{pr_tag}&gt;</strong>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{status_tag}&gt;</strong>
+      </div>
+    }
   end
 
   def find_links(text)
