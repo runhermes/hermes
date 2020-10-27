@@ -89,7 +89,34 @@ class Basecamp
     links.select { |link| link.start_with?('https://3.basecamp.com') }
   end
 
-  def is_todo_open?(resource)
-    !@client.todos(resource).empty?
+  def get_todo_resource(resource)
+    todoset = todoset(project_id(resource))
+    todolist = todolist((todoset),todolist_id(resource))
+    todo = todo(todolist,todo_id(resource))
   end
+
+  def project_id(resource)
+    @client.project(resource['bucket']['id'])
+  end
+
+  def todoset(project_id)
+    @client.todoset(project_id)
+  end  
+
+  def todolist_id(resource)
+    resource['parent']['id']
+  end  
+
+  def todolist(todoset,id)
+    @client.todolist(todoset,id)
+  end
+
+  def todo_id(resource)
+    resource['id']
+  end
+
+  def todo(todolist,id)
+    @client.todo(todolist,id)
+  end
+
 end
