@@ -88,4 +88,8 @@ class Basecamp
 
     links.select { |link| link.start_with?('https://3.basecamp.com') }
   end
+
+  def is_todo_open?(resource)
+    !@client.todos(resource).empty?
+  end
 end
