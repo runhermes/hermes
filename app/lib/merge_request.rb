@@ -33,6 +33,10 @@ class MergeRequest
     end
   end
 
+  def description
+    @request['object_attributes']['description']
+  end
+
   def full_name
     "#{acronym} #{project_name}/#{id}"
   end

@@ -26,7 +26,7 @@ class Basecamp
   end
 
   def resources
-    links = find_links(@request["object_attributes"]["description"])
+    links = find_links(@request.description)
 
     resources = links.map { |link| @client.resource(link) }
   end
@@ -61,7 +61,7 @@ class Basecamp
 
   def match_tags(comment, tags)
     tags.each do |tag|
-      return false unless comment.content.match(/<strong.*>.*#{tag}.*<\/strong>/)
+      return false unless comment.content.match?(/<strong.*>.*#{tag}.*<\/strong>/)
     end
 
     true

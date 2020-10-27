@@ -1,15 +1,11 @@
 class GitlabController < ApplicationController
 
   def webhook
-    # logger.info "Params: #{params}"
-
-    basecamp = Basecamp.new(logger)
-    basecamp.request = params
-
     merge = MergeRequest.new(logger, params)
-    orchestrator = Orchestrator.new(logger, basecamp, merge)
 
-    return head(:bad_request) unless orchestrator.valid_request?
+    return head(:bad_request) unless merge.valid?
+
+    orchestrator = Orchestrator.new(logger, merge)
 
     orchestrator.process_pull_request
   end
