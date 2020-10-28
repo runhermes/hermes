@@ -58,7 +58,7 @@ class MergeRequest
   end
 
   def id
-    @request['object_attributes']['id']
+    @request['object_attributes']['iid']
   end
 
   def url
