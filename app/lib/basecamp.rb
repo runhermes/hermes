@@ -33,21 +33,33 @@ class Basecamp
 
   def apply_todo_workflow(resource, pull_request)
     current_user_comments = comments_by_current_user(resource)
+    tags = pull_request.tags + ["Status:#{pull_request.state}", info_colour(pull_request.state)]
+
+    # Prevent multiple comments without state change
+    if pull_request.status == PullRequestStatus::UPDATED && current_user_comments.any? { |c| match_tags(c, tags) }
+      @logger.info "Comment already created on #{resource.type}##{resource.id}"
+      return
+    end
+
     case pull_request.status
-    when PullRequestStatus::OPENED, PullRequestStatus::UPDATED
-      tags = pull_request.tags + ['Status:Open']
-      if current_user_comments.any? { |c| match_tags(c, tags) }
-        @logger.info "Opening comment already created on #{resource.type}##{resource.id}"
-      else
-        @logger.info "Creating opening comment for #{pull_request.full_name}"
-        message = opening_comment(pull_request, tags)
-        @logger.info "Comment:\n#{message}"
-        result = @client.create_comment(resource, message)
-        @logger.info "Result: #{result}"
-      end
+    when PullRequestStatus::OPENED
+      @logger.info "Creating opening comment for #{pull_request.full_name}"
+      message = opening_comment(pull_request, tags)
+      @logger.info "Comment:\n#{message}"
+    when PullRequestStatus::CLOSED
+      @logger.info "Closing comment for #{pull_request.full_name}"
+      message = closed_comment(pull_request, tags)
+      @logger.info "Comment:\n#{message}"
+    when PullRequestStatus::REOPENED
+      @logger.info "Reopen item #{pull_request.full_name}"
+      message = reopen_comment(pull_request, tags)
+      @logger.info "Comment:\n#{message}"
     else
       @logger.info "Non supported status: #{pull_request.status}"
+      return
     end
+    result = @client.create_comment(resource, message)
+    @logger.info "Result: #{result}"
   end
 
   def comments_by_current_user(resource)
@@ -67,8 +79,12 @@ class Basecamp
     true
   end
 
+  def info_colour(state)
+    state == "Open" ? "17, 138, 15" : "138, 15, 17"
+  end
+
   def opening_comment(pull_request, tags)
-    project_tag, pr_tag, status_tag = tags
+    project_tag, pr_tag, status_tag, colour = tags
     @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
     %{
       <div>
@@ -76,9 +92,42 @@ class Basecamp
       <br><br>
       </div>
       <div>
-        <strong style="color: rgb(17, 138, 15);">&lt;#{project_tag}&gt;</strong>
-        <strong style="color: rgb(17, 138, 15);">&lt;#{pr_tag}&gt;</strong>
-        <strong style="color: rgb(17, 138, 15);">&lt;#{status_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{project_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{pr_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{status_tag}&gt;</strong>
+      </div>
+    }
+  end
+
+  def closed_comment(pull_request, tags)
+    project_tag, pr_tag, status_tag, colour = tags
+    @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
+    %{
+      <div>
+      <a href='#{pull_request.url}'>#{pull_request.full_name}</a> was closed
+      <br><br>
+      </div>
+      <div>
+        <strong style="color: rgb(#{colour});">&lt;#{project_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{pr_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{status_tag}&gt;</strong>
+      </div>
+    }
+  end
+
+  def reopen_comment(pull_request, tags)
+    project_tag, pr_tag, status_tag, colour = tags
+    @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
+    %{
+      <div>
+      <a href='#{pull_request.url}'>#{pull_request.full_name}</a> was reopened.
+      TODO will be completed once merged.
+      <br><br>
+      </div>
+      <div>
+        <strong style="color: rgb(#{colour});">&lt;#{project_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{pr_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{status_tag}&gt;</strong>
       </div>
     }
   end
