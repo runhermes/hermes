@@ -5,13 +5,15 @@ ENV LANG=C.UTF-8 \
   BUNDLE_JOBS=4 \
   BUNDLE_RETRY=3
 
+RUN bundle config set deployment 'true'
+
 ENV RAILS_ENV=production
 
 WORKDIR /hermes
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle check || bundle install --deployment
+RUN bundle check || bundle install
 
 COPY . .
 
