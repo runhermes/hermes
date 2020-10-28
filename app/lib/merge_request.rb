@@ -24,7 +24,7 @@ class MergeRequest
       PullRequestStatus::UPDATED
     when "close"
       PullRequestStatus::CLOSED
-    when "merged"
+    when "merge"
       PullRequestStatus::MERGED
     when "reopen"
       PullRequestStatus::REOPENED
