@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased](https://github.com/runhermes/hermes/tree/HEAD)
+
+**Documentation:**
+
+- Rewrite README and add initial contributing docs [\#12](https://github.com/runhermes/hermes/pull/12)
+
 ## [v0.0.1](https://github.com/runhermes/hermes/tree/v0.0.1) (2020-10-28)
 
 **Implemented enhancements:**
