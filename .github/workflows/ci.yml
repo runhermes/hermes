@@ -32,4 +32,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: runhermes/hermes
           tag_with_sha: true
+          tag_with_ref: true
           dockerfile: Dockerfile
