@@ -33,6 +33,10 @@ class MergeRequest
     end
   end
 
+  def state
+    @request['object_attributes']['state'].capitalize
+  end
+
   def description
     @request['object_attributes']['description']
   end
