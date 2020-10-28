@@ -20,33 +20,9 @@ jobs:
       run: |
         bundle exec rake
 
-  build_base:
-    runs-on: ubuntu-latest
-    name: Build and push base image
-    needs: test
-    steps:
-      - uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: gemfile_filter
-        with:
-          filters: |
-            gemfile:
-              - 'Gemfile'
-              - 'Gemfile.lock'
-      - name: build-push
-        uses: docker/build-push-action@v1
-        if: steps.gemfile_filter.outputs.gemfile == 'true'
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: runhermes/hermes-base
-          tag_with_sha: true
-          dockerfile: docker/base.Dockerfile
-
   build_rails:
     runs-on: ubuntu-latest
     name: Build and push rails image
-    needs: build_base
     steps:
       - uses: actions/checkout@v2
       - name: build-push
@@ -56,4 +32,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: runhermes/hermes
           tag_with_sha: true
+          tag_with_ref: true
           dockerfile: Dockerfile
