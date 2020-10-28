@@ -71,7 +71,7 @@ class Basecamp
       @logger.info "Non supported status: #{pull_request.status}"
       return
     end
-    
+
     result = @client.create_comment(resource, message)
     @logger.info "Result: #{result}"
   end

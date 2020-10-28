@@ -63,7 +63,7 @@ GEM
       msgpack (~> 1.0)
     builder (3.2.4)
     byebug (11.1.3)
-    camper (0.0.8)
+    camper (0.0.9)
       httparty (~> 0.18)
       rack-oauth2 (~> 1.14)
     concurrent-ruby (1.1.7)
