@@ -45,6 +45,17 @@ class Basecamp
         result = @client.create_comment(resource, message)
         @logger.info "Result: #{result}"
       end
+    when PullRequestStatus::MERGED
+      tags = pull_request.tags + ['Status:Merged']
+      if !resource.completed
+        @logger.info "Complete the TODO of #{resource.app_url}."
+        result = @client.complete_todo(resource)
+        @logger.info "Result: #{result}"
+      end
+      complete_msg = completing_comment(pull_request,tags)
+      @logger.info "Adding completing comment to the TODO of #{resource.app_url}."
+      result = @client.create_comment(resource, complete_msg)
+      @logger.info "Result: #{result}"
     else
       @logger.info "Non supported status: #{pull_request.status}"
     end
@@ -89,34 +100,20 @@ class Basecamp
     links.select { |link| link.start_with?('https://3.basecamp.com') }
   end
 
-  def get_todo_resource(resource)
-    todoset = todoset(project_id(resource))
-    todolist = todolist((todoset),todolist_id(resource))
-    todo = todo(todolist,todo_id(resource))
-  end
-
-  def project_id(resource)
-    @client.project(resource['bucket']['id'])
-  end
-
-  def todoset(project_id)
-    @client.todoset(project_id)
-  end  
-
-  def todolist_id(resource)
-    resource['parent']['id']
-  end  
-
-  def todolist(todoset,id)
-    @client.todolist(todoset,id)
-  end
-
-  def todo_id(resource)
-    resource['id']
-  end
-
-  def todo(todolist,id)
-    @client.todo(todolist,id)
+  def completing_comment(pull_request, tags)
+    project_tag, pr_tag, status_tag = tags
+    @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
+    %{
+      <div>
+      This TODO is completed as <a href='#{pull_request.url}'>#{pull_request.full_name}</a> has been merged
+      <br><br>
+      </div>
+      <div>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{project_tag}&gt;</strong>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{pr_tag}&gt;</strong>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{status_tag}&gt;</strong>
+      </div>
+    }
   end
 
 end
