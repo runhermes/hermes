@@ -24,7 +24,7 @@ class MergeRequest
       PullRequestStatus::UPDATED
     when "close"
       PullRequestStatus::CLOSED
-    when "merged"
+    when "merge"
       PullRequestStatus::MERGED
     when "reopen"
       PullRequestStatus::REOPENED
@@ -34,7 +34,7 @@ class MergeRequest
   end
 
   def state
-    @request['object_attributes']['state'] == "opened" ? "Open" : @request['object_attributes']['state'].capitalize
+    @request['object_attributes']['state'].capitalize
   end
 
   def description

@@ -42,7 +42,7 @@ class Basecamp
     end
 
     case pull_request.status
-    when PullRequestStatus::OPENED
+    when PullRequestStatus::OPENED, PullRequestStatus::UPDATED
       @logger.info "Creating opening comment for #{pull_request.full_name}"
       message = opening_comment(pull_request, tags)
       @logger.info "Comment:\n#{message}"
@@ -54,10 +54,24 @@ class Basecamp
       @logger.info "Reopen item #{pull_request.full_name}"
       message = reopen_comment(pull_request, tags)
       @logger.info "Comment:\n#{message}"
+     when PullRequestStatus::MERGED
+      if !resource.completed
+        @logger.info "Complete the TODO of #{resource.app_url}."
+        result = @client.complete_todo(resource)
+        @logger.info "Result: #{result}"
+      else
+        @logger.info "TODO was already completed. No further action"
+        return
+      end
+
+      @logger.info "Completing comment for #{pull_request.full_name}"
+      message = completing_comment(pull_request,tags)
+      @logger.info "Comment:\n#{message}"
     else
       @logger.info "Non supported status: #{pull_request.status}"
       return
     end
+    
     result = @client.create_comment(resource, message)
     @logger.info "Result: #{result}"
   end
@@ -80,7 +94,7 @@ class Basecamp
   end
 
   def info_colour(state)
-    state == "Open" ? "17, 138, 15" : "138, 15, 17"
+    state == "Opened" || state == "Merged" ? "17, 138, 15" : "138, 15, 17"
   end
 
   def opening_comment(pull_request, tags)
@@ -137,4 +151,21 @@ class Basecamp
 
     links.select { |link| link.start_with?('https://3.basecamp.com') }
   end
+
+  def completing_comment(pull_request, tags)
+    project_tag, pr_tag, status_tag = tags
+    @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
+    %{
+      <div>
+      This TODO is completed as <a href='#{pull_request.url}'>#{pull_request.full_name}</a> has been merged
+      <br><br>
+      </div>
+      <div>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{project_tag}&gt;</strong>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{pr_tag}&gt;</strong>
+        <strong style="color: rgb(17, 138, 15);">&lt;#{status_tag}&gt;</strong>
+      </div>
+    }
+  end
+
 end
