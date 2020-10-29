@@ -7,7 +7,8 @@ ENV LANG=C.UTF-8 \
 
 RUN bundle config set deployment 'true'
 
-ENV RAILS_ENV=production
+# We don't store any secrets on the hermes application
+ENV RAILS_ENV=production SECRET_KEY_BASE="dummy"
 
 WORKDIR /hermes
 
