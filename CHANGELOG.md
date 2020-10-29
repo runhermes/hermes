@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/runhermes/hermes/tree/HEAD)
 
+**Implemented enhancements:**
+
+- Enable logging to stdout [\#13](https://github.com/runhermes/hermes/pull/13)
+
 **Documentation:**
 
 - Rewrite README and add initial contributing docs [\#12](https://github.com/runhermes/hermes/pull/12)
