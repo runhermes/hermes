@@ -4,6 +4,7 @@
 
 **Implemented enhancements:**
 
+- Cleanup of credentials requirements [\#14](https://github.com/runhermes/hermes/pull/14)
 - Enable logging to stdout [\#13](https://github.com/runhermes/hermes/pull/13)
 
 **Documentation:**
