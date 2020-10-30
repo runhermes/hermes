@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased](https://github.com/runhermes/hermes/tree/HEAD)
+## [v0.0.2](https://github.com/runhermes/hermes/tree/v0.0.2) (2020-10-30)
 
 **Implemented enhancements:**
 
