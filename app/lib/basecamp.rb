@@ -33,47 +33,55 @@ class Basecamp
 
   def apply_todo_workflow(resource, pull_request)
     current_user_comments = comments_by_current_user(resource)
-    tags = pull_request.tags + ["Status:#{pull_request.state}", info_colour(pull_request.state)]
+    tags = pull_request.tags + ["Status:#{pull_request.state}"]
 
-    # Prevent multiple comments without state change
-    if pull_request.status == PullRequestStatus::UPDATED && current_user_comments.any? { |c| match_tags(c, tags) }
+    # Prevent multiple comments without action change
+    if !skip_comment_checks?(pull_request.action) && current_user_comments.any? { |c| match_tags(c, tags) }
       @logger.info "Comment already created on #{resource.type}##{resource.id}"
       return
     end
 
-    case pull_request.status
-    when PullRequestStatus::OPENED, PullRequestStatus::UPDATED
-      @logger.info "Creating opening comment for #{pull_request.full_name}"
-      message = opening_comment(pull_request, tags)
-      @logger.info "Comment:\n#{message}"
-    when PullRequestStatus::CLOSED
+    tags << info_colour(pull_request.state)
+    message = nil
+
+    case pull_request.action
+    when PullRequestAction::OPEN, PullRequestAction::UPDATE
+      if resource.completed
+        @logger.info "To-do was already completed. Add linking comment"
+        message = linking_comment(pull_request, tags)
+      else
+        @logger.info "Creating opening comment for #{pull_request.full_name}"
+        message = opening_comment(pull_request, tags)
+      end
+    when PullRequestAction::CLOSE
       @logger.info "Closing comment for #{pull_request.full_name}"
       message = closed_comment(pull_request, tags)
-      @logger.info "Comment:\n#{message}"
-    when PullRequestStatus::REOPENED
+    when PullRequestAction::REOPEN
       @logger.info "Reopen item #{pull_request.full_name}"
       message = reopen_comment(pull_request, tags)
-      @logger.info "Comment:\n#{message}"
-     when PullRequestStatus::MERGED
+    when PullRequestAction::MERGE
       if !resource.completed
-        @logger.info "Complete the TODO of #{resource.app_url}."
+        @logger.info "Complete the To-do #{resource.app_url}."
         result = @client.complete_todo(resource)
         @logger.info "Result: #{result}"
       else
-        @logger.info "TODO was already completed. No further action"
+        @logger.info "To-do was already completed. No further action"
         return
       end
-
-      @logger.info "Completing comment for #{pull_request.full_name}"
-      message = completing_comment(pull_request,tags)
-      @logger.info "Comment:\n#{message}"
     else
-      @logger.info "Non supported status: #{pull_request.status}"
+      @logger.info "Non supported action: #{pull_request.action}"
       return
     end
 
-    result = @client.create_comment(resource, message)
-    @logger.info "Result: #{result}"
+    unless message.nil?
+      @logger.info "Comment:\n#{message}"
+      result = @client.create_comment(resource, message)
+      @logger.info "Result: #{result}"
+    end
+  end
+
+  def skip_comment_checks?(action)
+    [PullRequestAction::CLOSE, PullRequestAction::REOPEN].include?(action)
   end
 
   def comments_by_current_user(resource)
@@ -97,12 +105,18 @@ class Basecamp
     state == "Opened" || state == "Merged" ? "17, 138, 15" : "138, 15, 17"
   end
 
+  def find_links(text)
+    links = URI.extract(text)
+
+    links.select { |link| link.start_with?('https://3.basecamp.com') }
+  end
+
   def opening_comment(pull_request, tags)
     project_tag, pr_tag, status_tag, colour = tags
     @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
     %{
       <div>
-      TODO will be completed once <a href='#{pull_request.url}'>#{pull_request.full_name}</a> is merged
+      To-do will be completed once #{pull_request_link(pull_request)} is merged
       <br><br>
       </div>
       <div>
@@ -118,7 +132,7 @@ class Basecamp
     @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
     %{
       <div>
-      <a href='#{pull_request.url}'>#{pull_request.full_name}</a> was closed
+      #{pull_request_link(pull_request)} was closed
       <br><br>
       </div>
       <div>
@@ -134,8 +148,8 @@ class Basecamp
     @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
     %{
       <div>
-      <a href='#{pull_request.url}'>#{pull_request.full_name}</a> was reopened.
-      TODO will be completed once merged.
+      #{pull_request_link(pull_request)} was reopened.
+      To-do will be completed once merged.
       <br><br>
       </div>
       <div>
@@ -146,18 +160,12 @@ class Basecamp
     }
   end
 
-  def find_links(text)
-    links = URI.extract(text)
-
-    links.select { |link| link.start_with?('https://3.basecamp.com') }
-  end
-
   def completing_comment(pull_request, tags)
     project_tag, pr_tag, status_tag = tags
     @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
     %{
       <div>
-      This TODO is completed as <a href='#{pull_request.url}'>#{pull_request.full_name}</a> has been merged
+      To-do is completed as #{pull_request_link(pull_request)} has been merged
       <br><br>
       </div>
       <div>
@@ -166,6 +174,26 @@ class Basecamp
         <strong style="color: rgb(17, 138, 15);">&lt;#{status_tag}&gt;</strong>
       </div>
     }
+  end
+
+  def linking_comment(pull_request, tags)
+    project_tag, pr_tag, status_tag, colour = tags
+    @logger.info "Project Tag: #{project_tag}; PR Tag: #{pr_tag}; Status Tag: #{status_tag}"
+    %{
+      <div>
+      #{pull_request_link(pull_request)} referenced this To-do.
+      <br><br>
+      </div>
+      <div>
+        <strong style="color: rgb(#{colour});">&lt;#{project_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{pr_tag}&gt;</strong>
+        <strong style="color: rgb(#{colour});">&lt;#{status_tag}&gt;</strong>
+      </div>
+    }
+  end
+
+  def pull_request_link(pull_request)
+    "<a href='#{pull_request.url}'>#{pull_request.full_name}</a>"
   end
 
 end
