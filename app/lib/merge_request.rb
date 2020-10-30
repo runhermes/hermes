@@ -16,18 +16,18 @@ class MergeRequest
     return @request["object_kind"] == "merge_request"
   end
 
-  def status
+  def action
     case @request['object_attributes']['action']
     when "open"
-      PullRequestStatus::OPENED
+      PullRequestAction::OPEN
     when "update"
-      PullRequestStatus::UPDATED
+      PullRequestAction::UPDATE
     when "close"
-      PullRequestStatus::CLOSED
+      PullRequestAction::CLOSE
     when "merge"
-      PullRequestStatus::MERGED
+      PullRequestAction::MERGE
     when "reopen"
-      PullRequestStatus::REOPENED
+      PullRequestAction::REOPEN
     else
       raise Error::UnexpectedMergeRequestStatus, @request
     end
