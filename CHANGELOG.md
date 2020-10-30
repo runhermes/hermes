@@ -7,9 +7,17 @@
 - Cleanup of credentials requirements [\#14](https://github.com/runhermes/hermes/pull/14)
 - Enable logging to stdout [\#13](https://github.com/runhermes/hermes/pull/13)
 
+**Fixed bugs:**
+
+- Pull Request action needs to account for To-do state in order to prepare message [\#15](https://github.com/runhermes/hermes/issues/15)
+
 **Documentation:**
 
 - Rewrite README and add initial contributing docs [\#12](https://github.com/runhermes/hermes/pull/12)
+
+**Merged pull requests:**
+
+- Checks PR status to decide message to post [\#16](https://github.com/runhermes/hermes/pull/16)
 
 ## [v0.0.1](https://github.com/runhermes/hermes/tree/v0.0.1) (2020-10-28)
 
