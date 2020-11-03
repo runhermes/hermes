@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root 'home#index'
 
+  get '/healthz', to: 'home#healthz'
+
   get 'basecamp/oauth'
   get 'basecamp/callback'
 
