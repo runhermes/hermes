@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.0.3](https://github.com/runhermes/hermes/tree/v0.0.3) (2020-11-03)
+
+**Implemented enhancements:**
+
+- Add healthz endpoint for probes checks in deployments [\#17](https://github.com/runhermes/hermes/issues/17)
+- Upgrade camper to latest version [\#23](https://github.com/runhermes/hermes/pull/23)
+- Add /healtz route [\#22](https://github.com/runhermes/hermes/pull/22)
+
+**Fixed bugs:**
+
+- Add implementation for root path [\#18](https://github.com/runhermes/hermes/issues/18)
+- Add root\_path endpoint [\#21](https://github.com/runhermes/hermes/pull/21)
+
 ## [v0.0.2](https://github.com/runhermes/hermes/tree/v0.0.2) (2020-10-30)
 
 **Implemented enhancements:**
