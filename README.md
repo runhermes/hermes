@@ -4,7 +4,7 @@
 
 * How to get started: [www.runhermes.io/guide](www.runhermes.io/guide) Not yet available
 * Full documentation: [www.runhermes.io/docs](www.runhermes.io/docs) Not yet available
-* Download the latest release: github.com/runatlantis/atlantis/releases/latest
+* Download the latest release: github.com/runhermes/hermes/releases/latest
 * Start Contributing: [./CONTRIBUTING.md]
 
 ## What is Hermes?
@@ -23,7 +23,7 @@ Hermes implements the following workflows:
   * Checks if the PR has been linked already by a comment in the Basecamp To-do, otherwise it follows the same procedure as when opening a new PR
 * Once PR is merged then:
   * To-do is open, add a comment stating that the PR has been merged and complete the To-do
-  * To-do is close, add a comment stating that the PR has been merged
+  * To-do is closed, add a comment stating that the PR has been merged
 * If PR is closed, then add a comment stating that the PR has been closed
 * If PR is reopened, then add a comment stating that the PR is reopened
 
