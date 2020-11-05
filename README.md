@@ -1,17 +1,29 @@
 # Hermes ![CI](https://github.com/runhermes/hermes/workflows/CI/badge.svg)
 
-## Resources
-
-* How to get started: [www.runhermes.io/guide](www.runhermes.io/guide) Not yet available
-* Full documentation: [www.runhermes.io/docs](www.runhermes.io/docs) Not yet available
-* Download the latest release: github.com/runhermes/hermes/releases/latest
-* Start Contributing: [./CONTRIBUTING.md]
-
 ## What is Hermes?
 
-A self-hosted ruby application that listens for pull request events via webhooks to automate their interactions with Basecamp.
+A self-hosted Ruby application that listens for pull request events via webhooks to automate their interactions with Basecamp. It is deployed as a standalone application into your infrastructure. No third-party has access to your credentials.
 
-## What does it do?
+Hermes listens for GitLab webhooks. It then reads the pull request description to determine if it contains Basecamp links that points to resources that can be managed with Hermes (e.g. To-dos).
+
+### Linking pull request with Basecamp To-dos
+
+You can link a pull request to an issue by using a supported keyword plus the Basecamp To-do URL in the pull request's description:
+
+Keywords:
+
+* close
+* closes
+* closed
+* fix
+* fixes
+* fixed
+* resolve
+* resolves
+* resolved
+
+
+### How does it work?
 
 Hermes implements the following workflows:
 
@@ -42,4 +54,4 @@ For inspecting the changes and tag releases, check the [Changelog](CHANGELOG.md)
 
 ## License
 
-Checkout the [LICENSE](LICENSE) for details
+Check out the [LICENSE](LICENSE) for details
