@@ -16,6 +16,8 @@ class BasecampController < ApplicationController
     auth_code = params[:code]
     tokens = @basecamp.authorize! auth_code
 
+    SettingsManager.update_tokens(tokens, logger)
+
     render plain: "Authentication successful"
   end
 

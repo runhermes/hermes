@@ -13,16 +13,18 @@ class Basecamp
 
   def initialize(logger)
     @logger = logger
-    @client = Camper.client
+    @client = Camper.configure do |config|
+      config.client_id = Settings.basecamp.client_id
+      config.client_secret = Settings.basecamp.client_secret
+      config.account_number = Settings.basecamp.account_number
+      config.refresh_token = Settings.basecamp.refresh_token
+      config.access_token = Settings.basecamp.access_token
+    end
   end
 
   def authorize!(code)
     @logger.info "Fetching OAuth tokens from Basecamp using code: #{code}"
-    token = @client.authorize! code
-
-    @logger.info "Refresh token: #{token.refresh_token}"
-    @logger.info "Access token: #{token.access_token}"
-    token
+    @client.authorize! code
   end
 
   def resources
