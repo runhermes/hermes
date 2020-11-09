@@ -34,6 +34,8 @@ module Hermes
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.hosts << "hermes-connector.herokuapp.com"
+
     config.basecamp = config_for(:basecamp)
   end
 end
