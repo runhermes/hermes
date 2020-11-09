@@ -33,5 +33,9 @@ module Hermes
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.hosts << "303becaf1f3d.ngrok.io"
+
+    config.basecamp = config_for(:basecamp)
   end
 end

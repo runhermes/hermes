@@ -1,9 +1,13 @@
-basecamp:
+.config_block: &config_block
   account_number: <%= ENV['HERMES_BASECAMP_ACCOUNT_NUMBER'] %>
-  client_id: <%= ENV['HERMES_BASECAMP_CLIEND_ID'] %>
+  client_id: <%= ENV['HERMES_BASECAMP_CLIENT_ID'] %>
   client_secret: <%= ENV['HERMES_BASECAMP_CLIENT_SECRET'] %>
   refresh_token: <%= ENV['HERMES_BASECAMP_REFRESH_TOKEN'] %>
   access_token: <%= ENV['HERMES_BASECAMP_ACCESS_TOKEN'] %>
+  redirect_uri: ''
 
-hermes:
-  secret: <%= ENV['HERMES_SECRET'] %>
+production:
+  <<: *config_block
+
+development:
+  <<: *config_block

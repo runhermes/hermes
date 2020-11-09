@@ -14,11 +14,12 @@ class Basecamp
   def initialize(logger)
     @logger = logger
     @client = Camper.configure do |config|
-      config.client_id = Settings.basecamp.client_id
-      config.client_secret = Settings.basecamp.client_secret
-      config.account_number = Settings.basecamp.account_number
-      config.refresh_token = Settings.basecamp.refresh_token
-      config.access_token = Settings.basecamp.access_token
+      config.client_id = Rails.configuration.basecamp.client_id
+      config.client_secret = Rails.configuration.basecamp.client_secret
+      config.account_number = Rails.configuration.basecamp.account_number
+      config.refresh_token = Rails.configuration.basecamp.refresh_token
+      config.access_token = Rails.configuration.basecamp.access_token
+      config.redirect_uri = Rails.configuration.basecamp.redirect_uri
     end
   end
 
