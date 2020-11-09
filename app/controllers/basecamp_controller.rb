@@ -1,5 +1,4 @@
 class BasecampController < ApplicationController
-
   before_action :new_instance
 
   def oauth
@@ -14,7 +13,12 @@ class BasecampController < ApplicationController
     return head(:bad_request) unless params.key? :code
 
     auth_code = params[:code]
-    tokens = @basecamp.authorize! auth_code
+    token = @basecamp.authorize! auth_code
+    logger.info "Refresh Token: #{token.refresh_token}"
+    logger.info "Access Token: #{token.access_token}"
+
+    Rails.configuration.basecamp.refresh_token = token.refresh_token
+    Rails.configuration.basecamp.access_token = token.access_token
 
     render plain: "Authentication successful"
   end
