@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.0.4](https://github.com/runhermes/hermes/tree/v0.0.4) (2020-12-10)
+
+**Implemented enhancements:**
+
+- Stores new Basecamp tokens for the lifetime of the process using Rails.configuration [\#29](https://github.com/runhermes/hermes/pull/29)
+
+**Fixed bugs:**
+
+- Tokens obtained from first time setup are not stored [\#27](https://github.com/runhermes/hermes/issues/27)
+
+**Documentation:**
+
+- Add initial batch of documentation [\#28](https://github.com/runhermes/hermes/pull/28)
+
+**Closed issues:**
+
+- Specify all environment variables under the hermes prefix [\#26](https://github.com/runhermes/hermes/issues/26)
+
 ## [v0.0.3](https://github.com/runhermes/hermes/tree/v0.0.3) (2020-11-03)
 
 **Implemented enhancements:**
