@@ -26,12 +26,7 @@ jobs:
     name: Update Changelog
     runs-on: ubuntu-latest
     steps:
-      - name: Get version from tag
-        env:
-          GITHUB_REF: ${{ github.ref }}
-        run: |
-          export CURRENT_VERSION=${GITHUB_TAG/refs\/tags\/v/}
-          echo "::set-env name=CURRENT_VERSION::$CURRENT_VERSION"
+      - uses: FranzDiebold/github-env-vars-action@v2
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -47,7 +42,7 @@ jobs:
           addSections: '{"documentation":{"prefix":"**Documentation:**","labels":["documentation"]}}'
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Update Changelog for tag ${{ env.CURRENT_VERSION }}
+          commit_message: Update Changelog for tag ${{ env.CI_REF_NAME }}
           file_pattern: CHANGELOG.md
 
   release_notes:
@@ -55,33 +50,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: changelog
     steps:
-      - name: Get version from tag
-        env:
-          GITHUB_REF: ${{ github.ref }}
-        run: |
-          export CURRENT_VERSION=${GITHUB_TAG/refs\/tags\/v/}
-          echo "::set-env name=CURRENT_VERSION::$CURRENT_VERSION"
-
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: FranzDiebold/github-env-vars-action@v2
+      - uses: actions/checkout@v2
         with:
           ref: main
 
-      - name: Get Changelog Entry
-        id: changelog_reader
+      - id: changelog_reader
         uses: mindsers/changelog-reader-action@v1
         with:
           version: ${{ env.CURRENT_VERSION }}
           path: ./CHANGELOG.md
 
-      - name: Create Release
-        id: create_release
+      - id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ env.CI_REF_NAME }}
+          release_name: ${{ env.CI_REF_NAME }}
           body: ${{ steps.changelog_reader.outputs.log_entry }}
           draft: false
           prerelease: false
