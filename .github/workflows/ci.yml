@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }} test
+    name: Ruby test
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
